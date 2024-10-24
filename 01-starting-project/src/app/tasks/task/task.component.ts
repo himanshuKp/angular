@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { type Task } from './task.model';
+import { CartComponent } from '../../shared/cart/cart.component';
 
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [],
+  imports: [CartComponent],
   templateUrl: './task.component.html',
   styleUrl: './task.component.css',
 })
