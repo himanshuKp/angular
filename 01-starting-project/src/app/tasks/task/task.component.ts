@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { type Task } from './task.model';
 import { CartComponent } from '../../shared/cart/cart.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [CartComponent],
+  imports: [CartComponent, DatePipe],
   templateUrl: './task.component.html',
   styleUrl: './task.component.css',
 })
