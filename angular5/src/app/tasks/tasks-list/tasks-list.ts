@@ -1,6 +1,7 @@
 import {Component, computed, inject, signal} from '@angular/core';
 import {TaskItem} from './task-item/task-item';
 import {TasksService} from '../tasks.service';
+import {TASK_STATUS_OPTIONS, taskStatusOptionsProvider} from '../task.model';
 
 @Component({
   selector: 'app-tasks-list',
@@ -8,9 +9,11 @@ import {TasksService} from '../tasks.service';
     TaskItem
   ],
   templateUrl: './tasks-list.html',
-  styleUrl: './tasks-list.css'
+  styleUrl: './tasks-list.css',
+  providers: [taskStatusOptionsProvider]
 })
 export class TasksList {
+  taskServiceOptions = inject(TASK_STATUS_OPTIONS);
   private taskService = inject(TasksService);
   selectedFilter = signal<string>('all');
   tasks = computed(() => {

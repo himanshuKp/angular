@@ -1,7 +1,8 @@
 import {Component, computed, inject, input} from '@angular/core';
-import {Task, TaskStatus} from '../../task.model';
+import {Task, TASK_STATUS_OPTIONS, TaskStatus, taskStatusOptionsProvider} from '../../task.model';
 import {FormsModule} from '@angular/forms';
 import {TasksService} from '../../tasks.service';
+import {LoggingService} from '../../../services/logging.service';
 
 @Component({
   selector: 'app-task-item',
@@ -9,11 +10,17 @@ import {TasksService} from '../../tasks.service';
     FormsModule
   ],
   templateUrl: './task-item.html',
-  styleUrl: './task-item.css'
+  styleUrl: './task-item.css',
+  providers: [
+    taskStatusOptionsProvider
+  ]
 })
 export class TaskItem {
   private taskService = inject(TasksService);
   task = input.required<Task>();
+  private loggingService = inject(LoggingService);
+  taskStatusOptions = inject(TASK_STATUS_OPTIONS);
+
   taskStatus = computed(() => {
     switch (this.task().status) {
       case 'OPEN':
@@ -45,5 +52,6 @@ export class TaskItem {
     }
 
     this.taskService.updateTaskStatus(taskId, newStatus);
+    this.loggingService.logStatus('Changed task status '+ newStatus);
   }
 }
