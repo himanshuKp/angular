@@ -12,7 +12,6 @@ import {TasksService} from '../tasks.service';
 })
 export class NewTask {
   private formEl = viewChild<ElementRef<HTMLFormElement>>('form');
-
   private taskService = inject(TasksService);
 
   onAddTask(title: string, description: string) {
