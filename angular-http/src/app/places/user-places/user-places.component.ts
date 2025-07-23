@@ -3,8 +3,6 @@ import {Component, DestroyRef, inject, signal} from '@angular/core';
 import { PlacesContainerComponent } from '../places-container/places-container.component';
 import { PlacesComponent } from '../places.component';
 import {Place} from "../place.model";
-import {HttpClient} from "@angular/common/http";
-import {catchError, map, throwError} from "rxjs";
 import {PlacesService} from "../places.service";
 
 @Component({
@@ -35,6 +33,13 @@ export class UserPlacesComponent {
         }
       });
 
+    this.destroyRef.onDestroy(()=>{
+      subscription.unsubscribe();
+    });
+  }
+
+  onSelectedPlace(selectedPlace: Place) {
+    const subscription = this.placesService.removeUserPlace(selectedPlace).subscribe();
     this.destroyRef.onDestroy(()=>{
       subscription.unsubscribe();
     });

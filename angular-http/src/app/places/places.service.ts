@@ -44,7 +44,22 @@ export class PlacesService {
     );
   }
 
-  removeUserPlace(place: Place) {}
+  removeUserPlace(place: Place) {
+    const previousPlaces = this.userPlaces();
+
+    if (previousPlaces.some((p) => p.id === place.id)) {
+      this.userPlaces.set(previousPlaces.filter((p) => p.id !== place.id));
+    }
+
+    return this.httpClient.delete(`http://localhost:3000/user-places/${place.id}`)
+      .pipe(
+        catchError((error) => {
+          return throwError(()=>{
+            new Error(error.message);
+          })
+        })
+      );
+  }
 
   fetchPlacesData(url: string, errorMsg: string) {
     return this.httpClient.get<{places: Place[]}>(url)
