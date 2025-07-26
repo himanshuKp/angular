@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {of} from "rxjs";
+import {debounceTime, of} from "rxjs";
 
 function mustContainQuestionMark(control: AbstractControl) {
   if (control.value.includes('?')) {
@@ -27,7 +27,9 @@ function unqiueEmailChecker(control: AbstractControl) {
     ReactiveFormsModule
   ]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
+  private destroyRef = inject(DestroyRef);
+
   form = new FormGroup({
     email: new FormControl('',{
       validators: [Validators.required, Validators.email],
@@ -37,6 +39,28 @@ export class LoginComponent {
       validators: [Validators.required, Validators.minLength(6), mustContainQuestionMark]
     })
   });
+
+  ngOnInit(){
+    const savedUser = window.localStorage.getItem('user');
+    if (savedUser) {
+      const userEmail = JSON.parse(savedUser);
+      this.form.patchValue({
+        email: userEmail.email
+      })
+    }
+
+    const subscription = this.form.valueChanges.pipe(debounceTime(500)).subscribe({
+      next: (value) => {
+        window.localStorage.setItem('user', JSON.stringify({
+          email: value.email
+        }))
+      }
+    });
+
+    this.destroyRef.onDestroy(()=>{
+      subscription.unsubscribe();
+    })
+  }
 
   get isEmailInvalid() {
     return this.form.controls.email.touched &&
